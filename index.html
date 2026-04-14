@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #ffffff;
+      --text:      #2a2f36;
+      --muted:     #6b7280;
+      --accent:    #2196f3;
+      --accent2:   #e91e8c;
+      --accent3:   #ff9800;
+      --card-bg:   #f8f9fa;
+      --border:    #e5e7eb;
+      --nav-h:     60px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Mulish', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── NAV ─── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex; align-items: center;
+    }
+    nav {
+      max-width: 900px; margin: 0 auto; width: 100%;
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
+      font-size: 1.15rem; font-weight: 700; color: var(--text);
+      cursor: pointer; transition: color 0.2s;
+    }
+    .nav-brand:hover { color: var(--accent); }
+    .nav-links { display: flex; gap: 0.5rem; list-style: none; }
+    .nav-links li a {
+      position: relative;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text);
+      transition: color 0.3s;
+      overflow: hidden;
+    }
+    /* color-shift shimmer on hover */
+    .nav-links li a::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 8px;
+      background: linear-gradient(
+        90deg,
+        var(--accent), var(--accent2), var(--accent3), var(--accent)
+      );
+      background-size: 300% 100%;
+      opacity: 0;
+      transition: opacity 0.3s;
+      animation: shimmer 1.8s linear infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0%   50%; }
+      100% { background-position: 300% 50%; }
+    }
+    .nav-links li a:hover::before { opacity: 1; }
+    .nav-links li a:hover { color: #fff; }
+    .nav-links li a span { position: relative; z-index: 1; }
+    .nav-links li a.active { color: var(--accent); font-weight: 700; }
+    .nav-links li a.active::after {
+      content: '';
+      position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+      width: 24px; height: 2px; background: var(--accent); border-radius: 2px;
+    }
+
+    /* ─── PAGES ─── */
+    .page { display: none; }
+    .page.active { display: block; }
+    main { flex: 1; max-width: 900px; margin: 0 auto; width: 100%; padding: 3rem 2rem; }
+
+    /* ─── TYPOGRAPHY ─── */
+    h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.6rem; line-height: 1.2; }
+    h2 { font-size: 1.55rem; font-weight: 700; margin: 2.5rem 0 1rem; color: var(--text); }
+    h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    p  { line-height: 1.75; color: var(--muted); margin-bottom: 1rem; }
+    .subtitle { font-size: 1.05rem; color: var(--muted); font-weight: 400; margin-bottom: 2rem; }
+
+    /* ─── HERO ─── */
+    .hero { display: flex; gap: 3rem; align-items: flex-start; margin-bottom: 3rem; }
+    .hero-img {
+      width: 130px; height: 130px; border-radius: 50%;
+      object-fit: cover; flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(33,150,243,0.2);
+    }
+    .hero-text { flex: 1; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .badge {
+      background: #e8f4fe; color: var(--accent);
+      padding: 0.3rem 0.75rem; border-radius: 20px;
+      font-size: 0.8rem; font-weight: 600;
+    }
+
+    /* ─── CARDS ─── */
+    .card-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr 1fr; }
+    @media(max-width:600px){ .card-grid { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .card .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+    .tag {
+      background: #f0f4f8; color: var(--muted);
+      padding: 0.2rem 0.6rem; border-radius: 12px;
+      font-size: 0.75rem; font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tag:hover { background: var(--accent); color: #fff; }
+
+    /* ─── PHOTO WITH FADE-REVEAL ─── */
+    .photo-reveal-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr 1fr; margin: 2rem 0; }
+    @media(max-width:600px){ .photo-reveal-grid { grid-template-columns: 1fr; } }
+    .photo-reveal {
+      position: relative; border-radius: 12px; overflow: hidden;
+      aspect-ratio: 16/9; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    .photo-reveal img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: opacity 0.5s ease;
+    }
+    .photo-reveal .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(33,150,243,0.85), rgba(233,30,140,0.75));
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      color: #fff; text-align: center;
+    }
+    .photo-reveal:hover img { opacity: 0.15; }
+    .photo-reveal:hover .overlay { opacity: 1; }
+    .overlay h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .overlay p  { font-size: 0.85rem; color: rgba(255,255,255,0.9); margin: 0; }
+
+    /* ─── SINGLE PHOTOS (non-project) ─── */
+    .photo-single-grid { display: grid; gap: 1.2rem; grid-template-columns: 1fr 1fr 1fr; margin: 1.5rem 0; }
+    @media(max-width:600px){ .photo-single-grid { grid-template-columns: 1fr; } }
+    .photo-card {
+      position: relative; border-radius: 12px; overflow: hidden;
+      aspect-ratio: 4/3; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    .photo-card img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease; }
+    .photo-card .overlay {
+      position: absolute; inset: 0;
+      background: rgba(42,47,54,0.82);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 1rem; opacity: 0;
+      transition: opacity 0.5s ease;
+      color: #fff; text-align: center;
+    }
+    .photo-card:hover img { opacity: 0.2; }
+    .photo-card:hover .overlay { opacity: 1; }
+
+    /* ─── BLOG LIST ─── */
+    .blog-item {
+      border-bottom: 1px solid var(--border);
+      padding: 1.4rem 0;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .blog-item:hover h3 { color: var(--accent); }
+    .blog-date { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.3rem; }
+
+    /* ─── TAGS PAGE ─── */
+    .tags-cloud { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+    .tag-big {
+      padding: 0.5rem 1.2rem; border-radius: 24px;
+      font-size: 0.9rem; font-weight: 600;
+      background: var(--card-bg); border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.25s;
+    }
+    .tag-big:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: scale(1.05); }
+
+    /* ─── TIMELINE (Career/Activities) ─── */
+    .timeline { position: relative; margin-top: 1.5rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 16px; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .tl-item { display: flex; gap: 1.5rem; margin-bottom: 2rem; }
+    .tl-dot {
+      flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+      background: var(--accent); border: 3px solid #fff;
+      box-shadow: 0 0 0 2px var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 0.75rem; font-weight: 700; z-index: 1;
+    }
+    .tl-content { flex: 1; background: var(--card-bg); border-radius: 10px; padding: 1.2rem; border: 1px solid var(--border); }
+    .tl-year { font-size: 0.78rem; color: var(--accent); font-weight: 700; margin-bottom: 0.25rem; }
+
+    /* ─── CONTACT FORM ─── */
+    .form-group { margin-bottom: 1.2rem; }
+    label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; }
+    input, textarea {
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-family: inherit; font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(33,150,243,0.12);
+    }
+    textarea { resize: vertical; min-height: 140px; }
+    .btn-submit {
+      position: relative; overflow: hidden;
+      padding: 0.75rem 2rem; border-radius: 8px; border: none;
+      font-family: inherit; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; color: #fff;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--accent));
+      background-size: 300% 100%;
+      animation: shimmer 2s linear infinite;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.88; }
+    .socials { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+    .social-btn {
+      padding: 0.5rem 1.2rem; border-radius: 8px;
+      background: var(--card-bg); border: 1px solid var(--border);
+      font-weight: 600; font-size: 0.88rem; cursor: pointer;
+      transition: all 0.25s;
+    }
+    .social-btn:hover { background: var(--text); color: #fff; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--card-bg); border-top: 1px solid var(--border);
+      padding: 2rem; text-align: center; color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); font-weight: 600; }
+
+    /* ─── POPUP ─── */
+    .popup-overlay {
+      display: none; position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,0.45);
+      align-items: center; justify-content: center;
+    }
+    .popup-overlay.show { display: flex; }
+    .popup-box {
+      background: #fff; border-radius: 16px;
+      padding: 2.5rem 2.8rem;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+      animation: popIn 0.25s ease;
+      max-width: 340px; width: 90%;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+    .popup-icon { font-size: 2.2rem; margin-bottom: 0.6rem; }
+    .popup-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .popup-sub { font-size: 0.9rem; color: var(--muted); margin-bottom: 1.8rem; }
+    .popup-btns { display: flex; gap: 1rem; justify-content: center; }
+    .btn-yes, .btn-no {
+      padding: 0.6rem 1.8rem; border-radius: 8px;
+      border: none; font-family: inherit;
+      font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-yes { background: var(--accent); color: #fff; }
+    .btn-yes:hover { background: #1769c0; }
+    .btn-no { background: var(--card-bg); color: var(--text); border: 1px solid var(--border); }
+    .btn-no:hover { background: #fee2e2; color: #dc2626; border-color: #dc2626; }
+
+    /* ─── ACTIVITIES GRID ─── */
+    .act-grid { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr 1fr; }
+    @media(max-width:600px){ .act-grid { grid-template-columns: 1fr; } }
+    .act-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.3rem; text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .act-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .act-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+
+    /* ─── SECTION DIVIDER ─── */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 2.5rem 0 1rem;
+    }
+    .see-all {
+      font-size: 0.85rem; color: var(--accent);
+      font-weight: 600; cursor: pointer;
+    }
+    .see-all:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<!-- ─── LEAVE PAGE POPUP ─── -->
+<div class="popup-overlay" id="leavePopup">
+  <div class="popup-box">
+    <div class="popup-icon">🚪</div>
+    <div class="popup-title">Leave this page?</div>
+    <div class="popup-sub">You're about to navigate away. Any unsaved changes will be lost.</div>
+    <div class="popup-btns">
+      <button class="btn-yes" id="popupYes">Yes</button>
+      <button class="btn-no"  id="popupNo">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── HEADER / NAV ─── -->
+<header>
+  <nav>
+    <div class="nav-brand" onclick="navigate('about')">My Portfolio</div>
+    <ul class="nav-links">
+      <li><a href="#" data-page="projects" onclick="handleNav(event,'projects')"><span>Projects</span></a></li>
+      <li><a href="#" data-page="blog"     onclick="handleNav(event,'blog')"><span>Blog</span></a></li>
+      <li><a href="#" data-page="tags"     onclick="handleNav(event,'tags')"><span>Tags</span></a></li>
+      <li><a href="#" data-page="career"   onclick="handleNav(event,'career')"><span>Career</span></a></li>
+      <li><a href="#" data-page="activities" onclick="handleNav(event,'activities')"><span>Activities</span></a></li>
+      <li><a href="#" data-page="about"    onclick="handleNav(event,'about')"><span>About</span></a></li>
+      <li><a href="#" data-page="contact"  onclick="handleNav(event,'contact')"><span>Contact</span></a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════
+     PAGE: ABOUT (default)
+═══════════════════════════════════ -->
+<div class="page active" id="page-about">
+  <main>
+    <div class="hero">
+      <!-- Photo 1: About/Avatar -->
+      <img class="hero-img"
+        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=260&h=260&fit=crop&crop=face"
+        alt="Profile photo" />
+      <div class="hero-text">
+        <h1>Hi, I'm Alex Morgan</h1>
+        <p class="subtitle">Full-Stack Developer & ML Enthusiast based in San Francisco.</p>
+        <p>I build thoughtful products and write about technology, machine learning, and the craft of software development. Previously at Stripe and Vercel, now working on my own projects.</p>
+        <div class="badge-row">
+          <span class="badge">🏆 Kaggle Master</span>
+          <span class="badge">⚡ Open Source Contributor</span>
+          <span class="badge">🎤 Public Speaker</span>
+          <span class="badge">🌍 San Francisco, CA</span>
+        </div>
+      </div>
+    </div>
+
+    <h2>What I write about</h2>
+    <p>This site is where I share what I learn — detailed tutorials, project write-ups, ML paper reviews, and thoughts on career growth and software craftsmanship.</p>
+
+    <!-- Photo 2: Activities/About section photo (fade reveal) -->
+    <div class="section-header">
+      <h2 style="margin:0">A Glimpse of My World</h2>
+    </div>
+    <div class="photo-single-grid">
+      <div class="photo-card">
+        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop" alt="Coding" />
+        <div class="overlay"><h3>🖥️ Building</h3><p>Crafting elegant code every day</p></div>
+      </div>
+      <div class="photo-card">
+        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop" alt="Learning" />
+        <div class="overlay"><h3>📚 Learning</h3><p>Always curious, always growing</p></div>
+      </div>
+      <div class="photo-card">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop" alt="Speaking" />
+        <div class="overlay"><h3>🎤 Speaking</h3><p>Sharing knowledge at conferences</p></div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2 style="margin:0">Featured Posts</h2>
+      <span class="see-all" onclick="navigate('blog')">See all →</span>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="blog-date">March 12, 2026</div>
+        <h3>How I Built a Real-Time ML Pipeline</h3>
+        <p>A deep dive into streaming architecture using Kafka, Flink, and PyTorch.</p>
+        <div class="tags">
+          <span class="tag">ML</span><span class="tag">Architecture</span><span class="tag">Python</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="blog-date">Feb 20, 2026</div>
+        <h3>My 2025 Reading List: 40 Books Reviewed</h3>
+        <p>Technical books, fiction, biographies — here's what shaped my thinking this year.</p>
+        <div class="tags">
+          <span class="tag">Books</span><span class="tag">Learning</span>
+        </div>
+      </div>
+    </div>
+
+    <h2>Fun Facts</h2>
+    <div class="card-grid">
+      <div class="card"><p>🌍 Speak 3 languages (English, Spanish, German)</p></div>
+      <div class="card"><p>♟️ Rated 1800+ on Chess.com</p></div>
+      <div class="card"><p>📖 Read War and Peace — twice</p></div>
+      <div class="card"><p>🥋 Former competitive fencer</p></div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════
+     PAGE: PROJECTS
+═══════════════════════════════════ -->
+<div class="page" id="page-projects">
+  <main>
+    <h1>Projects</h1>
+    <p class="subtitle">Things I've built — from side experiments to production systems.</p>
+
+    <!-- 2 Project Screenshots with Fade-Reveal -->
+    <h2>Featured Projects</h2>
+    <div class="photo-reveal-grid">
+      <div class="photo-reveal">
+        <!-- Project Screenshot 1 -->
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&h=400&fit=crop" alt="Project 1 Screenshot" />
+        <div class="overlay">
+          <h3>📊 DataViz Dashboard</h3>
+          <p>Real-time analytics platform built with React, D3.js, and a FastAPI backend. Handles 50k+ events/second.</p>
+          <div style="margin-top:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;">
+            <span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;font-size:0.75rem;">React</span>
+            <span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;font-size:0.75rem;">D3.js</span>
+            <span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;font-size:0.75rem;">FastAPI</span>
+          </div>
+        </div>
+      </div>
+      <div class="photo-reveal">
+        <!-- Project Screenshot 2 -->
+        <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=700&h=400&fit=crop" alt="Project 2 Screenshot" />
+        <div class="overlay">
+          <h3>🤖 ML Model Monitor</h3>
+          <p>Open-source tool for monitoring ML model drift, performance, and data quality in production environments.</p>
+          <div style="margin-top:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;">
+            <span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;font-size:0.75rem;">Python</span>
+            <span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;font-size:0.75rem;">PyTorch</span>
+            <span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;font-size:0.75rem;">Grafana</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>All Projects</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>🔍 Semantic Search Engine</h3>
+        <p>Vector-based search over 2M+ documents using sentence transformers and FAISS. Sub-100ms latency.</p>
+        <div class="tags"><span class="tag">NLP</span><span class="tag">FAISS</span><span class="tag">Python</span></div>
+      </div>
+      <div class="card">
+        <h3>📝 Personal Knowledge Base</h3>
+        <p>A Notion-like app with spaced repetition built-in. Uses Anki integration for automatic flashcard creation.</p>
+        <div class="tags"><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">Anki</span></div>
+      </div>
+      <div class="card">
+        <h3>🎯 Recommendation Engine</h3>
+        <p>Collaborative filtering system deployed at scale, serving 5M+ users with sub-50ms p99 latency.</p>
+        <div class="tags"><span class="tag">Spark</span><span class="tag">Scala</span><span class="tag">Redis</span></div>
+      </div>
+      <div class="card">
+        <h3>🌐 KindleVocab → Anki</h3>
+        <p>CLI tool to extract vocabulary from Kindle and auto-generate Anki flashcards with context sentences.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">CLI</span><span class="tag">Languages</span></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════
+     PAGE: BLOG
+═══════════════════════════════════ -->
+<div class="page" id="page-blog">
+  <main>
+    <h1>Blog</h1>
+    <p class="subtitle">Writing about ML, engineering, career, and life.</p>
+
+    <div class="blog-item">
+      <div class="blog-date">Mar 16, 2026 · <span class="tag" style="cursor:default">ML</span></div>
+      <h3>Collaborative Reinforcement Learning: Why Training in Teams Works</h3>
+      <p>A deep dive into HACRL — a paradigm where multiple agents collaborate during training instead of learning in isolation. Surprising results.</p>
+    </div>
+    <div class="blog-item">
+      <div class="blog-date">Feb 23, 2026 · <span class="tag" style="cursor:default">LLM</span></div>
+      <h3>Beyond Positional Bias: Extending LLM Context to 128k Tokens</h3>
+      <p>How dropping positional embeddings at inference time enables zero-shot generalization to much longer contexts — without retraining.</p>
+    </div>
+    <div class="blog-item">
+      <div class="blog-date">Feb 16, 2026 · <span class="tag" style="cursor:default">Architecture</span></div>
+      <h3>How I Built a Real-Time ML Pipeline at Scale</h3>
+      <p>Streaming architecture, Kafka, Flink, and lessons learned from processing 50k+ events per second in production.</p>
+    </div>
+    <div class="blog-item">
+      <div class="blog-date">Jan 30, 2026 · <span class="tag" style="cursor:default">Career</span></div>
+      <h3>My 2025 Job Search: Honest Account of Interviewing at 12 Companies</h3>
+      <p>What worked, what didn't, how I prepared, and the mindset shifts that made the difference in landing the right role.</p>
+    </div>
+    <div class="blog-item">
+      <div class="blog-date">Jan 10, 2026 · <span class="tag" style="cursor:default">Learning</span></div>
+      <h3>12 Years With Anki: How Spaced Repetition Changed My Brain</h3>
+      <p>From German to Spanish to Japanese — how I've used spaced repetition to build lasting memory across three languages.</p>
+    </div>
+    <div class="blog-item">
+      <div class="blog-date">Dec 20, 2025 · <span class="tag" style="cursor:default">Web</span></div>
+      <h3>Crafting This Portfolio: Jekyll, GitHub Pages, and a Custom Domain</h3>
+      <p>A technical walkthrough of how I built and deployed this website, including the design decisions and trade-offs made along the way.</p>
+    </div>
+    <div class="blog-item">
+      <div class="blog-date">Nov 15, 2025 · <span class="tag" style="cursor:default">ML</span></div>
+      <h3>Top 10 ML Papers I Read in 2025</h3>
+      <p>My curated annual roundup of the most impactful, surprising, and technically impressive papers across the ML landscape.</p>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════
+     PAGE: TAGS
+═══════════════════════════════════ -->
+<div class="page" id="page-tags">
+  <main>
+    <h1>Tags</h1>
+    <p class="subtitle">Browse all content by topic or technology.</p>
+
+    <h2>Technical Topics</h2>
+    <div class="tags-cloud">
+      <span class="tag-big">🤖 Machine Learning</span>
+      <span class="tag-big">🧠 Deep Learning</span>
+      <span class="tag-big">📊 Data Science</span>
+      <span class="tag-big">⚙️ MLOps</span>
+      <span class="tag-big">🔍 NLP</span>
+      <span class="tag-big">👁️ Computer Vision</span>
+      <span class="tag-big">🏗️ Architecture</span>
+      <span class="tag-big">🐍 Python</span>
+      <span class="tag-big">⚛️ React</span>
+      <span class="tag-big">🦀 Rust</span>
+      <span class="tag-big">☁️ Cloud / AWS</span>
+      <span class="tag-big">📦 Docker</span>
+    </div>
+
+    <h2>Career & Growth</h2>
+    <div class="tags-cloud">
+      <span class="tag-big">💼 Career</span>
+      <span class="tag-big">🎤 Public Speaking</span>
+      <span class="tag-big">🗂️ Productivity</span>
+      <span class="tag-big">📖 Books</span>
+      <span class="tag-big">🎯 Interviews</span>
+      <span class="tag-big">💡 Lessons Learned</span>
+    </div>
+
+    <h2>Personal</h2>
+    <div class="tags-cloud">
+      <span class="tag-big">🌍 Languages</span>
+      <span class="tag-big">🃏 Anki</span>
+      <span class="tag-big">♟️ Chess</span>
+      <span class="tag-big">🏋️ Fitness</span>
+      <span class="tag-big">📚 Reading</span>
+      <span class="tag-big">✈️ Travel</span>
+      <span class="tag-big">🎨 Creativity</span>
+    </div>
+
+    <h2>Paper Reviews</h2>
+    <div class="tags-cloud">
+      <span class="tag-big">📄 LLM</span>
+      <span class="tag-big">📄 Reinforcement Learning</span>
+      <span class="tag-big">📄 Transformers</span>
+      <span class="tag-big">📄 Diffusion Models</span>
+      <span class="tag-big">📄 RAG</span>
+      <span class="tag-big">📄 Agents</span>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════
+     PAGE: CAREER
+═══════════════════════════════════ -->
+<div class="page" id="page-career">
+  <main>
+    <h1>Career</h1>
+    <p class="subtitle">My professional journey — from economics to big tech engineering.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot">🏢</div>
+        <div class="tl-content">
+          <div class="tl-year">2024 – Present</div>
+          <h3>Senior ML Engineer · Horizon AI</h3>
+          <p>Leading ML infrastructure for a 100M+ user ads platform. Built the recommendation engine that increased CTR by 18%. Manage a team of 4 engineers.</p>
+          <div class="tags"><span class="tag">PyTorch</span><span class="tag">Spark</span><span class="tag">Kubernetes</span></div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">🚀</div>
+        <div class="tl-content">
+          <div class="tl-year">2021 – 2024</div>
+          <h3>ML Engineer · Vercel</h3>
+          <p>Built ML-powered developer tooling — smart autocomplete, anomaly detection for deployments, and predictive scaling. Reduced cold-start latency by 40%.</p>
+          <div class="tags"><span class="tag">Python</span><span class="tag">Go</span><span class="tag">Terraform</span></div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">💳</div>
+        <div class="tl-content">
+          <div class="tl-year">2019 – 2021</div>
+          <h3>Data Scientist · Stripe</h3>
+          <p>Fraud detection models serving $200B+ in annual payment volume. Reduced false-positive rate by 35% using gradient boosting ensembles and graph neural networks.</p>
