@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="News and updates from Keaton Surfield">
+  <title>News · Keaton Surfield</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0b1324; --navy-deep: #060b16; --ink: #e8edf5; --muted: #94a3b8;
+      --sky: #7cc4ff; --sky-bright: #a6d8ff; --line: rgba(255,255,255,0.10); --gold: #f2c56b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--navy); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+    #bg { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
+    .orb { position: fixed; z-index: 0; pointer-events: none; border-radius: 50%; filter: blur(80px); opacity: .18; animation: drift 22s ease-in-out infinite alternate; }
+    .orb.one { width: 32rem; height: 32rem; top: -10rem; left: -8rem; background: var(--sky); }
+    .orb.two { width: 26rem; height: 26rem; bottom: -8rem; right: -6rem; background: #5b7cfa; animation-duration: 28s; animation-delay: -9s; }
+    @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(60px,40px) scale(1.12); } }
+
+    .page { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .wrap { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; width: 100%; }
+    @media (min-width: 768px) { .wrap { padding: 0 2rem; } }
+
+    header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(11,19,36,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    nav { display: flex; align-items: center; justify-content: flex-end; height: 4rem; gap: 2rem; }
+    @media (min-width: 768px) { nav { height: 5rem; } }
+    nav a { font-size: .875rem; letter-spacing: .04em; color: var(--muted); position: relative; transition: color .2s; }
+    nav a::after { content: ""; position: absolute; left: 0; bottom: -6px; height: 1px; width: 0; background: var(--sky); transition: width .25s ease; }
+    nav a:hover, nav a.active { color: var(--ink); }
+    nav a:hover::after, nav a.active::after { width: 100%; }
+
+    main { flex: 1; }
+    .intro { padding: 4rem 0 2rem; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem; }
+    @media (min-width: 768px) { .intro { padding: 6rem 0 2.5rem; } }
+    .eyebrow { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+    h1 { margin-top: .75rem; font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 2.5rem; line-height: 1.05; letter-spacing: -0.02em; }
+    @media (min-width: 768px) { h1 { font-size: 3.25rem; } }
+    .intro p { margin-top: 1rem; color: var(--muted); max-width: 34rem; line-height: 1.65; }
+    .li-btn { display: inline-flex; align-items: center; gap: .5rem; border-radius: 9999px; padding: .65rem 1.25rem; font-size: .875rem; font-weight: 600; background: var(--sky); color: var(--navy-deep); transition: all .2s ease; white-space: nowrap; }
+    .li-btn:hover { background: var(--sky-bright); transform: translateY(-1px); }
+    .li-btn svg { width: 16px; height: 16px; }
+
+    /* ---------- toolbar ---------- */
+    .toolbar { display: grid; gap: .75rem; padding: 1rem; border-radius: 1rem; border: 1px solid var(--line); background: rgba(255,255,255,0.03); margin-bottom: 2rem; }
+    @media (min-width: 768px) { .toolbar { grid-template-columns: 1fr auto auto auto; align-items: end; } }
+    .field label { display: block; font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: .4rem; }
+    .field input { width: 100%; padding: .6rem .85rem; border-radius: .6rem; border: 1px solid var(--line); background: rgba(6,11,22,0.6); color: var(--ink); font: inherit; font-size: .9rem; outline: none; transition: border-color .2s; }
+    .field input:focus { border-color: rgba(124,196,255,0.6); }
+    .field input[type="date"] { color-scheme: dark; min-width: 10rem; }
+    .clear { padding: .6rem 1rem; border-radius: .6rem; border: 1px solid var(--line); font-size: .85rem; color: var(--muted); transition: all .2s; height: 2.6rem; }
+    .clear:hover { color: var(--ink); border-color: rgba(124,196,255,0.4); }
+    .count { font-size: .8rem; color: var(--muted); margin: -1rem 0 1.5rem; }
+
+    /* ---------- posts ---------- */
+    .group-title { display: flex; align-items: center; gap: .75rem; font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; color: var(--sky); font-weight: 600; margin: 1.5rem 0 1rem; }
+    .group-title.pinned { color: var(--gold); }
+    .group-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .feed { display: grid; gap: 1.25rem; padding-bottom: 1rem; }
+    @media (min-width: 900px) { .feed { grid-template-columns: repeat(2, 1fr); } }
+    .post {
+      position: relative; display: flex; flex-direction: column; gap: .9rem;
+      padding: 1.5rem; border-radius: 1.25rem; border: 1px solid var(--line); background: rgba(255,255,255,0.025);
+      transition: border-color .3s, background .3s, transform .3s;
+      opacity: 0; transform: translateY(18px);
+    }
+    .post.in { opacity: 1; transform: none; transition: opacity .6s ease, transform .6s ease, border-color .3s, background .3s; }
+    .post:hover { border-color: rgba(124,196,255,0.35); background: rgba(124,196,255,0.04); }
+    .post.is-pinned { border-color: rgba(242,197,107,0.45); background: rgba(242,197,107,0.04); }
+    .post.is-pinned:hover { border-color: rgba(242,197,107,0.7); }
+    .post.latest::after { content: "Latest"; position: absolute; top: -.6rem; left: 1.25rem; font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; padding: .25rem .6rem; border-radius: 9999px; background: var(--sky); color: var(--navy-deep); font-weight: 600; }
+    .post-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .post-date { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+    .post h2 { margin-top: .35rem; font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.3rem; letter-spacing: -0.01em; line-height: 1.25; }
+    .pin { flex: none; width: 2.2rem; height: 2.2rem; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line); color: var(--muted); transition: all .2s; }
+    .pin svg { width: 16px; height: 16px; transition: transform .3s; }
+    .pin:hover { color: var(--gold); border-color: rgba(242,197,107,0.5); }
+    .pin.on { color: var(--navy-deep); background: var(--gold); border-color: var(--gold); }
+    .pin.on svg { transform: rotate(-30deg); }
+    .post p { color: var(--muted); line-height: 1.7; font-size: .95rem; }
+    .post p + p { margin-top: .6rem; }
+    .post .media { border-radius: .85rem; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+    .post .media img, .post .media video { width: 100%; display: block; }
+    .post .embed { border-radius: .85rem; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #fff; }
+    .post .embed iframe { width: 100%; height: 480px; border: 0; display: block; }
+    .tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .chip { font-size: .72rem; color: var(--muted); padding: .25rem .6rem; border-radius: 9999px; border: 1px solid var(--line); }
+    .post-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: .5rem; }
+    .open { display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem; font-weight: 500; color: var(--sky); }
+    .open svg { width: 14px; height: 14px; transition: transform .2s; }
+    .open:hover svg { transform: translate(2px, -2px); }
+    .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 3rem 1rem; border: 1px dashed var(--line); border-radius: 1rem; }
+    .spacer { height: 4rem; }
+
+    footer { border-top: 1px solid var(--line); padding: 1.5rem 0; margin-top: auto; text-align: center; font-size: .875rem; color: var(--muted); }
+    .reveal { opacity: 0; transform: translateY(16px); animation: rise .7s ease forwards; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal, .post { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+
+  <div class="page">
+    <header>
+      <div class="wrap">
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="about.html">About Me</a>
+          <a href="projects.html">Projects</a>
+          <a href="news.html" class="active">News</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="wrap intro reveal">
+        <div>
+          <p class="eyebrow">Updates</p>
+          <h1>News</h1>
+          <p>Posts, milestones, and things I've been working on. Pin the ones you want to keep at the top.</p>
+        </div>
+        <!-- Set this to Keaton's LinkedIn profile URL -->
+        <a class="li-btn" id="profile-link" href="https://www.linkedin.com/in/" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          Follow on LinkedIn
+        </a>
+      </section>
+
+      <section class="wrap">
+        <div class="toolbar reveal">
+          <div class="field">
+            <label for="q">Search</label>
+            <input id="q" type="search" placeholder="Search posts…" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="from">From</label>
+            <input id="from" type="date">
+          </div>
+          <div class="field">
+            <label for="to">To</label>
+            <input id="to" type="date">
+          </div>
+          <button class="clear" id="clear" type="button">Clear</button>
+        </div>
+        <p class="count" id="count"></p>
+
+        <div id="pinned-wrap" hidden>
+          <div class="group-title pinned">Pinned</div>
+          <div class="feed" id="pinned"></div>
+        </div>
+        <div class="group-title" id="all-title">All posts</div>
+        <div class="feed" id="feed"></div>
+        <div class="spacer"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap"><p>© 2026 Keaton Surfield</p></div>
+    </footer>
+  </div>
+
+  <script>
+    /* =====================================================================
+       YOUR POSTS LIVE HERE. Newest can go anywhere; the page sorts by date.
+       Copy a block, paste it, fill it in.
+
+       Fields:
+         date    – "YYYY-MM-DD" (required; drives sorting, "Latest" badge and date search)
+         title   – short headline
+         text    – your post text; separate paragraphs with \n\n
+         url     – link to the LinkedIn post (or anywhere else)
+         pinned  – true to pin by default (visitors can also pin/unpin for themselves)
+         tags    – (optional) ["Kubernetes", "KSU"]
+         media   – (optional) { type: "image", src: "media/file.jpg" }
+                             or { type: "video", src: "media/file.mp4" }
+         embed   – (optional) LinkedIn embed URL. On the post click "..." > "Embed this post",
+                   copy ONLY the src="..." value from the code LinkedIn gives you.
+                   Shows the real post inline instead of text + media.
+    ===================================================================== */
+    const POSTS = [
+      {
+        date: "2026-10-20",
+        title: "Agentic ML workflow project reaches end-to-end execution",
+        text: "The LangGraph agent now takes user submitted training code, fills in a Kubeflow pipeline template, and submits it to the cluster without manual steps.\n\nNext up is job status reporting back through the FastAPI layer.",
+        url: "https://www.linkedin.com/in/",
+        pinned: true,
+        tags: ["LangGraph", "Kubeflow", "FastAPI"]
+      },
+      {
+        date: "2026-09-12",
+        title: "Self hosted finance stack with Firefly III",
+        text: "Moved my personal finance tracking to a Docker based Firefly III deployment with the Data Importer. PowerShell handles backups and updates, Python cleans the bank exports before import.",
+        url: "https://www.linkedin.com/in/",
+        pinned: false,
+        tags: ["Docker", "Firefly III"]
+      },
+      {
+        date: "2026-08-30",
+        title: "Fall semester: Distributed Computing and Computer Vision",
+        text: "Starting the term with two courses I have been looking forward to. Expect project write ups here as they come together.",
+        url: "https://www.linkedin.com/in/",
+        pinned: false,
+        tags: ["KSU"]
+      }
+    ];
+
+    /* ---------- rendering (no need to edit below) ---------- */
+    const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const fmt = d => new Date(d + "T00:00:00").toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    const PIN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 11V4h6v7l2 3H7z"/></svg>';
+    const EXT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>';
+
+    // Pins: start from the defaults in POSTS, then apply the visitor's own changes (saved in their browser).
+    const KEY = "news-pins";
+    let overrides = {};
+    try { overrides = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { overrides = {}; }
+    const isPinned = p => (p.id in overrides) ? overrides[p.id] : !!p.pinned;
+    const savePins = () => { try { localStorage.setItem(KEY, JSON.stringify(overrides)); } catch (e) {} };
+
+    const posts = POSTS.map((p, i) => ({ ...p, id: p.date + "-" + i })).sort((a, b) => b.date.localeCompare(a.date));
+    const latestId = posts.length ? posts[0].id : null;
+
+    const $ = id => document.getElementById(id);
+    const q = $("q"), from = $("from"), to = $("to");
+
+    function matches(p) {
+      const term = q.value.trim().toLowerCase();
+      if (term) {
+        const hay = [p.title, p.text, ...(p.tags || [])].join(" ").toLowerCase();
+        if (!hay.includes(term)) return false;
+      }
+      if (from.value && p.date < from.value) return false;
+      if (to.value && p.date > to.value) return false;
+      return true;
+    }
+
+    function card(p) {
+      const pinned = isPinned(p);
+      const body = p.embed
+        ? `<div class="embed"><iframe src="${esc(p.embed)}" title="LinkedIn post" allowfullscreen loading="lazy"></iframe></div>`
+        : `${String(p.text || "").split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("")}
+           ${p.media ? `<div class="media">${p.media.type === "video"
+              ? `<video src="${esc(p.media.src)}" controls playsinline preload="metadata"></video>`
+              : `<img src="${esc(p.media.src)}" alt="" loading="lazy">`}</div>` : ""}`;
+      return `
+        <article class="post ${pinned ? "is-pinned" : ""} ${p.id === latestId ? "latest" : ""}" data-id="${p.id}">
+          <div class="post-head">
+            <div>
+              <div class="post-date">${fmt(p.date)}</div>
+              <h2>${esc(p.title)}</h2>
+            </div>
+            <button class="pin ${pinned ? "on" : ""}" type="button" data-pin="${p.id}" aria-pressed="${pinned}" aria-label="${pinned ? "Unpin" : "Pin"} this post" title="${pinned ? "Unpin" : "Pin"}">${PIN_ICON}</button>
+          </div>
+          ${body}
+          ${p.tags && p.tags.length ? `<div class="tags">${p.tags.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div>` : ""}
+          <div class="post-foot">
+            ${p.url ? `<a class="open" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">View on LinkedIn ${EXT_ICON}</a>` : "<span></span>"}
+          </div>
+        </article>`;
+    }
+
+    function render() {
+      const shown = posts.filter(matches);
+      const pinned = shown.filter(isPinned), rest = shown.filter(p => !isPinned(p));
+      $("pinned-wrap").hidden = pinned.length === 0;
+      $("pinned").innerHTML = pinned.map(card).join("");
+      $("all-title").textContent = pinned.length ? "Everything else" : "All posts";
+      $("feed").innerHTML = rest.length ? rest.map(card).join("")
+        : `<div class="empty">${shown.length ? "All matching posts are pinned above." : "No posts match that search."}</div>`;
+      const filtering = q.value || from.value || to.value;
+      $("count").textContent = filtering ? `${shown.length} of ${posts.length} posts` : `${posts.length} posts`;
+
+      const io = new IntersectionObserver(entries => {
+        entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add("in"), i * 70); io.unobserve(e.target); } });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".post").forEach(el => io.observe(el));
+    }
+
+    document.addEventListener("click", e => {
+      const btn = e.target.closest("[data-pin]");
+      if (!btn) return;
+      const id = btn.dataset.pin, p = posts.find(x => x.id === id);
+      overrides[id] = !isPinned(p);
+      savePins();
+      render();
+    });
+    [q, from, to].forEach(el => el.addEventListener("input", render));
+    $("clear").addEventListener("click", () => { q.value = from.value = to.value = ""; render(); });
+    render();
+
+    // Constellation background (same as the other pages)
+    (function () {
+      const canvas = document.getElementById('bg'), ctx = canvas.getContext('2d');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let w, h, dpr, nodes = [], mouse = { x: -9999, y: -9999 };
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = canvas.width = innerWidth * dpr; h = canvas.height = innerHeight * dpr;
+        canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px';
+        const count = Math.floor((innerWidth * innerHeight) / 16000);
+        nodes = Array.from({ length: Math.min(count, 110) }, () => ({
+          x: Math.random() * w, y: Math.random() * h,
+          vx: (Math.random() - .5) * .25 * dpr, vy: (Math.random() - .5) * .25 * dpr,
+          r: (Math.random() * 1.4 + .6) * dpr, phase: Math.random() * Math.PI * 2
+        }));
+      }
+      function step(t) {
+        ctx.clearRect(0, 0, w, h);
+        const link = 130 * dpr;
+        for (const n of nodes) {
+          if (!reduce) {
+            n.x += n.vx; n.y += n.vy;
+            const dx = mouse.x * dpr - n.x, dy = mouse.y * dpr - n.y, d = Math.hypot(dx, dy);
+            if (d < 220 * dpr) { n.x += dx / d * .18; n.y += dy / d * .18; }
+          }
+          if (n.x < 0) n.x = w; else if (n.x > w) n.x = 0;
+          if (n.y < 0) n.y = h; else if (n.y > h) n.y = 0;
+        }
+        for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < link) { ctx.strokeStyle = `rgba(124,196,255,${(1 - d / link) * .22})`; ctx.lineWidth = dpr * .7; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+        }
+        for (const n of nodes) {
+          const tw = .55 + .45 * Math.sin(t / 900 + n.phase);
+          ctx.fillStyle = `rgba(166,216,255,${.35 + .45 * tw})`;
+          ctx.beginPath(); ctx.arc(n.x, n.y, n.r * (0.8 + .4 * tw), 0, Math.PI * 2); ctx.fill();
+        }
+        if (!reduce) requestAnimationFrame(step);
+      }
+      addEventListener('resize', resize);
+      addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+      addEventListener('mouseleave', () => { mouse.x = mouse.y = -9999; });
+      resize(); requestAnimationFrame(step);
+    })();
+  </script>
+</body>
+</html>

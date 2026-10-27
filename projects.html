@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Keaton Surfield — projects">
+  <title>Projects · Keaton Surfield</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0b1324; --navy-deep: #060b16; --ink: #e8edf5; --muted: #94a3b8;
+      --sky: #7cc4ff; --sky-bright: #a6d8ff; --line: rgba(255,255,255,0.10);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--navy); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+
+    #bg { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
+    .orb { position: fixed; z-index: 0; pointer-events: none; border-radius: 50%; filter: blur(80px); opacity: .18; animation: drift 22s ease-in-out infinite alternate; }
+    .orb.one { width: 32rem; height: 32rem; top: -10rem; left: -8rem; background: var(--sky); }
+    .orb.two { width: 26rem; height: 26rem; bottom: -8rem; right: -6rem; background: #5b7cfa; animation-duration: 28s; animation-delay: -9s; }
+    @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(60px,40px) scale(1.12); } }
+
+    .page { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .wrap { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; width: 100%; }
+    @media (min-width: 768px) { .wrap { padding: 0 2rem; } }
+
+    header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(11,19,36,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    nav { display: flex; align-items: center; justify-content: flex-end; height: 4rem; gap: 2rem; }
+    @media (min-width: 768px) { nav { height: 5rem; } }
+    nav a { font-size: .875rem; letter-spacing: .04em; color: var(--muted); position: relative; transition: color .2s; }
+    nav a::after { content: ""; position: absolute; left: 0; bottom: -6px; height: 1px; width: 0; background: var(--sky); transition: width .25s ease; }
+    nav a:hover, nav a.active { color: var(--ink); }
+    nav a:hover::after, nav a.active::after { width: 100%; }
+
+    main { flex: 1; }
+    .intro { padding: 4rem 0 2.5rem; }
+    @media (min-width: 768px) { .intro { padding: 6rem 0 3rem; } }
+    .eyebrow { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+    h1 { margin-top: .75rem; font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 2.5rem; line-height: 1.05; letter-spacing: -0.02em; }
+    @media (min-width: 768px) { h1 { font-size: 3.25rem; } }
+    .intro p { margin-top: 1rem; color: var(--muted); max-width: 36rem; line-height: 1.65; font-size: 1rem; }
+
+    /* ---------- project list ---------- */
+    .projects { padding-bottom: 5rem; display: grid; gap: 1.5rem; }
+    .project {
+      display: grid; gap: 1.5rem; align-items: center;
+      padding: 1.5rem; border-radius: 1.25rem;
+      border: 1px solid var(--line); background: rgba(255,255,255,0.025);
+      transition: border-color .3s ease, background .3s ease, transform .3s ease;
+      opacity: 0; transform: translateY(24px);
+    }
+    .project.in { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s ease, border-color .3s, background .3s; }
+    .project:hover { border-color: rgba(124,196,255,0.35); background: rgba(124,196,255,0.04); }
+    @media (min-width: 768px) {
+      .project { grid-template-columns: 5fr 6fr; gap: 2.5rem; padding: 2rem; }
+      .project:nth-child(even) .media { order: 2; }
+    }
+    .media {
+      position: relative; aspect-ratio: 16 / 10; border-radius: .9rem; overflow: hidden;
+      background: radial-gradient(circle at 30% 30%, #1d2b4d, #0f1a33);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+    }
+    .media img, .media video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+    .project:hover .media img, .project:hover .media video { transform: scale(1.04); }
+    .media .placeholder { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; }
+    .media::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 60%, rgba(6,11,22,0.35)); }
+
+    .body .num { font-size: .75rem; letter-spacing: .2em; color: var(--sky); font-weight: 600; }
+    .body h2 { margin-top: .5rem; font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.6rem; letter-spacing: -0.01em; }
+    @media (min-width: 768px) { .body h2 { font-size: 1.9rem; } }
+    .body p { margin-top: .9rem; color: var(--muted); line-height: 1.7; font-size: 1rem; }
+    .tags { margin-top: 1.1rem; display: flex; flex-wrap: wrap; gap: .5rem; }
+    .chip { font-size: .78rem; color: var(--muted); padding: .3rem .7rem; border-radius: 9999px; border: 1px solid var(--line); background: rgba(255,255,255,0.025); }
+    .links { margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: .6rem; }
+    .btn { display: inline-flex; align-items: center; gap: .4rem; border-radius: 9999px; padding: .5rem 1rem; font-size: .82rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.2); color: var(--ink); transition: all .2s ease; }
+    .btn:hover { border-color: rgba(124,196,255,0.5); color: var(--sky); transform: translateY(-1px); }
+    .btn svg { width: 14px; height: 14px; }
+
+    .empty { color: var(--muted); padding: 3rem 0; text-align: center; }
+
+    footer { border-top: 1px solid var(--line); padding: 1.5rem 0; margin-top: auto; text-align: center; font-size: .875rem; color: var(--muted); }
+
+    .reveal { opacity: 0; transform: translateY(16px); animation: rise .7s ease forwards; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal, .project { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+
+  <div class="page">
+    <header>
+      <div class="wrap">
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="about.html">About Me</a>
+          <a href="projects.html" class="active">Projects</a>
+          <a href="news.html">News</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="wrap intro reveal">
+        <p class="eyebrow">Selected Work</p>
+        <h1>Projects</h1>
+        <p>Things I have built, broken, and rebuilt. A mix of coursework, personal experiments, and hardware tinkering.</p>
+      </section>
+
+      <section class="wrap projects" id="projects"></section>
+    </main>
+
+    <footer>
+      <div class="wrap"><p>© 2026 Keaton Surfield</p></div>
+    </footer>
+  </div>
+
+  <script>
+    /* =====================================================================
+       To add a project, copy one of the blocks below (from "{" to "},"),
+       paste it into the list, and fill in the fields. Put your images and
+       videos in the "media" folder next to this file.
+
+       Fields:
+         title        – shown as the heading
+         description  – one paragraph
+         media        – { type: "image", src: "media/your-file.jpg" }
+                     or { type: "video", src: "media/your-file.mp4", poster: "media/thumb.jpg" }
+                     or { type: "youtube", id: "dQw4w9WgXcQ" }   (the part after v= in the URL)
+                     or leave it out entirely to show a placeholder
+         tags         – (optional) short list of tech used
+         links        – (optional) list of { label, url }
+       Projects appear in the order listed.
+
+          {
+        title: "",
+        description: "A set of parametric enclosures for single-board computers, designed to be printed without supports and to route Ethernet and USB cleanly. Every revision is version-controlled alongside the firmware it houses.",
+        media: { type: "video", src: "media/rag-demo.mp4", poster: "media/finance.png" },
+        tags: ["3D Printing", "CAD", "Git"]
+      }
+    ===================================================================== */
+    const PROJECTS = [
+      {
+        title: "LangGraph Agentic AI",
+        description: "The objective of this project was to develop a web application that simplifies the execution of machine learning workloads through an agentic AI system built with LangGraph and LangChain, integrated with Kubeflow and Kubernetes. The application abstracts the complexity of containerization, pipeline configuration, and infrastructure management, allowing users to submit Python machine learning code without extensive knowledge of the underlying orchestration technologies.\n\nThe system follows a modular design consisting of a Next.js frontend, a FastAPI backend, a PostgreSQL database, an AI agent layer, and a Kubeflow integration layer. Development followed an incremental approach, with each subsystem implemented and tested independently before integration. Docker, Git, and GitHub supported containerization and version control.\n\nThe agent analyzes user submitted code, identifies the information required to execute the workload, and prepares the training component using predefined Dockerfile and Kubeflow pipeline templates before submitting it to Kubernetes.",
+        media: { type: "image", src: "media/langgraph.png" },
+        tags: ["Python", "Docker", "Kubernetes", "FastAPI", "ML",],
+        links: [
+          { label: "GitHub", url: "https://github.com/indy5lg/kf-agent" }
+        ]
+      },
+      {
+        title: "Finance management container",
+                description: "The objective of this project was to deploy a self hosted personal finance management system using Firefly III, packaged as Docker containers so that the application, its database, and the Data Importer run as isolated, reproducible services. The deployment abstracts the installation and dependency management of the Ruby and PHP based application stack, allowing financial records to be maintained on local infrastructure rather than a third party service.\n\nThe system consists of the Firefly III application container, a database container, and the Data Importer container, which ingests transaction exports from bank statements and maps them to accounts and categories. Configuration is managed through environment files kept outside the container images.\n\nPowerShell scripts automate container startup, backup, and update tasks, while Python scripts prepare and clean transaction files before import. The platform can be rebuilt from its configuration at any time.",
+        media: { type: "image", src: "media/finance.png" },
+        tags: ["Docker", "Powershell", "Python", "Ruby"],
+        links: [
+          { label: "GitHub", url: "https://github.com/firefly-iii/firefly-iii" },
+        ]
+      },
+       {
+        title: "CPU Scheduling Architecture",
+                description: "The objective of this project was to implement and evaluate common CPU scheduling algorithms within a Windows Forms application written in C# on .NET 8.0. The application accepts a set of processes with arrival times, burst times, and priorities, runs the selected scheduling algorithm, and reports the waiting time and turnaround time for each process in a results table.\n\nThe scheduler supports First Come First Serve, Shortest Job First, Priority Scheduling, and Round Robin with a user defined quantum. The algorithms are isolated in a single module so that additional scheduling policies can be added without modifying the user interface or the process model.\n\nDevelopment began from a provided starting point and added algorithm implementations, input validation, and result reporting. The project reinforced how scheduling policy affects average waiting time and responsiveness under different workloads.",
+        media: { type: "image", src: "media/Scheduler.png" },
+        tags: ["Linux", "VMWare", "VSCode", "Ubuntu"],
+        links: [
+          { label: "GitHub", url: "https://github.com/KeatonSurfield/CS-3502-CPU-Sim-Project-StartingPoint" },
+        ]
+      },
+             {
+        title: "Linux VMWare",
+        description: "The objective of this project was to build and operate an Ubuntu Linux virtual machine in VMware and use it as a development environment for systems programming in C. The virtual machine was provisioned from an Ubuntu image, allocated CPU, memory, and disk resources, and configured with networking so that it could reach package repositories and the host system.\n\nWithin the environment, the GNU toolchain was installed and used to compile, debug, and run C programs that exercised process creation, file descriptors, and inter process communication. Shell configuration, user permissions, and package management were handled through the terminal to build familiarity with Linux administration.\n\nThe project provided a safe, disposable platform for working close to the operating system. Snapshots allowed experiments to be rolled back, and the completed machine serves as a reusable base for later Linux coursework.",        media: { type: "image", src: "media/Linux.png" },
+        tags: ["Linux", "VMWare", "C", "Ubuntu"],
+        links: [
+          { label: "GitHub", url: "https://github.com/KeatonSurfield/CS-3502-CPU-Sim-Project-StartingPoint" },
+        ]
+      },
+    ];
+
+    /* ---------- rendering (you should not need to edit below this line) ---------- */
+    function renderMedia(m) {
+      if (!m) return '<div class="placeholder">Coming soon</div>';
+      if (m.type === "image") return `<img src="${m.src}" alt="" loading="lazy">`;
+      if (m.type === "video") return `<video src="${m.src}" ${m.poster ? `poster="${m.poster}"` : ""} muted loop playsinline autoplay preload="metadata"></video>`;
+      if (m.type === "youtube") return `<iframe src="https://www.youtube-nocookie.com/embed/${m.id}?rel=0" title="Project video" style="width:100%;height:100%;border:0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+      return "";
+    }
+    const linkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>';
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    const root = document.getElementById("projects");
+    if (!PROJECTS.length) {
+      root.innerHTML = '<p class="empty">Projects coming soon.</p>';
+    } else {
+      root.innerHTML = PROJECTS.map((p, i) => `
+        <article class="project">
+          <div class="media">${renderMedia(p.media)}</div>
+          <div class="body">
+            <p class="num">${String(i + 1).padStart(2, "0")}</p>
+            <h2>${esc(p.title)}</h2>
+            <p>${esc(p.description)}</p>
+            ${p.tags && p.tags.length ? `<div class="tags">${p.tags.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div>` : ""}
+            ${p.links && p.links.length ? `<div class="links">${p.links.map(l => `<a class="btn" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ${linkIcon}</a>`).join("")}</div>` : ""}
+          </div>
+        </article>`).join("");
+    }
+
+    // Reveal each card as it scrolls into view
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".project").forEach(el => io.observe(el));
+
+    // Pause videos that scroll offscreen
+    const vio = new IntersectionObserver(entries => {
+      entries.forEach(e => { const v = e.target; e.isIntersecting ? v.play().catch(() => {}) : v.pause(); });
+    }, { threshold: 0.3 });
+    document.querySelectorAll(".media video").forEach(v => vio.observe(v));
+
+    // Constellation background (same as the landing page)
+    (function () {
+      const canvas = document.getElementById('bg'), ctx = canvas.getContext('2d');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let w, h, dpr, nodes = [], mouse = { x: -9999, y: -9999 };
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = canvas.width = innerWidth * dpr; h = canvas.height = innerHeight * dpr;
+        canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px';
+        const count = Math.floor((innerWidth * innerHeight) / 16000);
+        nodes = Array.from({ length: Math.min(count, 110) }, () => ({
+          x: Math.random() * w, y: Math.random() * h,
+          vx: (Math.random() - .5) * .25 * dpr, vy: (Math.random() - .5) * .25 * dpr,
+          r: (Math.random() * 1.4 + .6) * dpr, phase: Math.random() * Math.PI * 2
+        }));
+      }
+      function step(t) {
+        ctx.clearRect(0, 0, w, h);
+        const link = 130 * dpr;
+        for (const n of nodes) {
+          if (!reduce) {
+            n.x += n.vx; n.y += n.vy;
+            const dx = mouse.x * dpr - n.x, dy = mouse.y * dpr - n.y, d = Math.hypot(dx, dy);
+            if (d < 220 * dpr) { n.x += dx / d * .18; n.y += dy / d * .18; }
+          }
+          if (n.x < 0) n.x = w; else if (n.x > w) n.x = 0;
+          if (n.y < 0) n.y = h; else if (n.y > h) n.y = 0;
+        }
+        for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < link) { ctx.strokeStyle = `rgba(124,196,255,${(1 - d / link) * .22})`; ctx.lineWidth = dpr * .7; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+        }
+        for (const n of nodes) {
+          const tw = .55 + .45 * Math.sin(t / 900 + n.phase);
+          ctx.fillStyle = `rgba(166,216,255,${.35 + .45 * tw})`;
+          ctx.beginPath(); ctx.arc(n.x, n.y, n.r * (0.8 + .4 * tw), 0, Math.PI * 2); ctx.fill();
+        }
+        if (!reduce) requestAnimationFrame(step);
+      }
+      addEventListener('resize', resize);
+      addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+      addEventListener('mouseleave', () => { mouse.x = mouse.y = -9999; });
+      resize(); requestAnimationFrame(step);
+    })();
+  </script>
+</body>
+</html>
